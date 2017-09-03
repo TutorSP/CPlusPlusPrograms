@@ -1,0 +1,115 @@
+#include<iostream.h>
+const int size=5;
+class CQ
+{
+	private:
+		int q[SIZE];
+		int front;
+		int rear;
+	public:
+		CQ();
+		void enqueue(int);
+		int dequeue();
+		void display();
+		class Full{	};	//exception class for overflow
+		class Empty{	};	//exception class for underflow
+};
+CQ::CQ()		//default constructor
+{
+	front=-1;
+	rear=-1;
+}
+void CQ::enqueue(int item)
+{
+	if(rear==-1)
+	{
+		rear=0;
+		front=0;
+		q[rear]=item;
+		cout<<endl<<"Insertion successful";
+	}
+	else
+	{
+		next=(rear % SIZE) + 1;
+		if (next!=front)	//not full
+		{
+			rear=next;
+			q[rear]=item;
+			cout<<endl<<"Insertion successful";
+		}
+		else
+			throw Full();
+	}
+}
+int CQ::dequeue()
+{
+	int item;
+	if(front==-1)
+		throw Empty();
+	else
+	{
+		item=q[front];
+		if(rear==front)	//contains only one element?
+		{
+			front=-1;
+			rear=-1;
+		}
+		else
+			front=(front % SIZE) + 1;
+	}
+	return (item);
+}
+void CQ::display()
+{
+	if(front!=-1)
+	{
+	for(int i=front; i<=rear; i++)
+		cout<<endl<<q[i];
+	}
+	else
+		throw Empty();
+}
+int main()
+{
+	CQ obj;
+	int ch,item;
+L:	try
+	{
+	do
+	{
+		cout<<endl<<"1. INSERT"<<endl<<"2. DELETE"<<endl<<"3. DISPLAY"<<endl<<"4. EXIT";
+		cout<<endl<<"Enter choice: ";
+		cin>>ch;			
+		switch(ch)
+		{
+			case 1:
+				cout<<endl<<"Enter value to insert: ";
+				cin>>item;
+				obj.enqueue(item);
+				break;
+			case 2:
+				item=obj.dequeue();
+				cout<<endl<<"Element deleted from queue is: "<<item;
+				break;
+			case 3:
+				obj.display();
+				break;
+			case 4:
+				break;
+			default:
+				cout<<endl<<"Invalid choice. Please re-enter.";
+		}
+	}while(ch!=4);
+	}
+	catch(CQ::Full)
+	{
+		cout<<endl<<"Exception: Queue is full";
+		goto L;
+	}
+	catch(CQ::Empty)
+	{
+		cout<<endl<<"Exception: Queue is empty";
+		goto L;
+	}
+return 0;
+}
